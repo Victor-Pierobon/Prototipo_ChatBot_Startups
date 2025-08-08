@@ -94,7 +94,6 @@ Organizada por prioridade.
 
 ## 5. Arquitetura do Protótipo
 
-
 ### Pipeline:
 
 1. Ingestão — download de PDFs/HTMLs de fontes oficiais
@@ -175,3 +174,80 @@ Organizada por prioridade.
 9. Pipeline de atualização de base legal
 
 10. Auditoria e logging completo
+
+---
+---
+
+## Como Executar o Protótipo
+
+Este projeto é um protótipo de chatbot que utiliza a técnica de **Retrieval-Augmented Generation (RAG)** para responder a perguntas com base em um conjunto de documentos. Ele foi projetado para ser executado localmente com o [LM Studio](https://lmstudio.ai/).
+
+### Pré-requisitos
+
+Antes de começar, garanta que você tenha o seguinte instalado:
+
+*   **Python 3.9+**: [Link para download](https://www.python.org/downloads/)
+*   **LM Studio**: [Link para download](https://lmstudio.ai/)
+*   Um modelo de linguagem (LLM) baixado e carregado no LM Studio (ex: Llama 3, Mistral, etc.).
+
+### Passo 1: Configurar o Backend
+
+1.  **Navegue até a pasta do backend:**
+    ```bash
+    cd backend
+    ```
+
+2.  **Crie um ambiente virtual (recomendado):**
+    ```bash
+    python -m venv venv
+    ```
+
+3.  **Ative o ambiente virtual:**
+    *   No Windows:
+        ```bash
+        .\venv\Scripts\activate
+        ```
+    *   No macOS/Linux:
+        ```bash
+        source venv/bin/activate
+        ```
+
+4.  **Instale as dependências do Python:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+    *(Isso pode levar alguns minutos, pois fará o download de bibliotecas como PyTorch e Sentence-Transformers).*
+
+### Passo 2: Processar os Documentos (Ingestão)
+
+Este passo só precisa ser executado uma vez (ou sempre que os documentos na pasta `src/documentos` forem alterados).
+
+1.  **Execute o script de ingestão:**
+    (Certifique-se de que você ainda está no ambiente virtual ativado e na pasta `backend`)
+    ```bash
+    python ingest.py
+    ```
+    *   O script irá ler todos os PDFs, processá-los e criar dois arquivos na pasta `backend`: `faiss_index.bin` e `chunks.pkl`.
+
+### Passo 3: Iniciar o Servidor do Modelo (LM Studio)
+
+1.  Abra o **LM Studio**.
+2.  Carregue o modelo de sua preferência.
+3.  Vá para a aba **"Local Server"** (ícone `<->`).
+4.  Clique em **"Start Server"**. O servidor deve estar rodando em `http://localhost:1234`.
+
+### Passo 4: Iniciar a API do Backend
+
+1.  **Execute o servidor FastAPI:**
+    (Com o ambiente virtual ativado e na pasta `backend`)
+    ```bash
+    uvicorn main:app --reload
+    ```
+    *   A API estará disponível em `http://localhost:8000`. Você pode abrir este endereço no seu navegador e ver a mensagem `{"status":"API do Chatbot está funcionando!"}`.
+
+### Passo 5: Abrir a Interface do Chat (Frontend)
+
+1.  **Abra o arquivo `frontend/index.html` diretamente no seu navegador.**
+    *   Você pode fazer isso clicando duas vezes no arquivo ou usando a extensão "Live Server" no VS Code (clique com o botão direito no arquivo e selecione "Open with Live Server").
+
+Agora você pode interagir com o chatbot! Digite uma pergunta na caixa de texto e pressione "Enviar".
